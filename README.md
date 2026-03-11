@@ -19,6 +19,80 @@ A deep learning-based surface crack detection system using **CNN with Transfer L
 
 ---
 
+## 🧠 Approach & Methodology
+
+### Why Transfer Learning?
+
+Training a CNN from scratch requires **massive datasets** and **compute power**. Instead, we leverage **MobileNetV2** — a model pre-trained on 1.4M ImageNet images — and **fine-tune** it for crack detection. This gives us:
+
+- ✅ **Higher accuracy** with less training data
+- ✅ **Faster convergence** (fewer epochs needed)
+- ✅ **Smaller model size** (~8 MB vs hundreds of MB)
+
+### Pipeline Overview
+
+```
+┌──────────────┐    ┌──────────────────┐    ┌───────────────────┐    ┌──────────────┐
+│  Raw Images  │───▶│  Preprocessing   │───▶│  Model Training   │───▶│  Evaluation  │
+│  (40K imgs)  │    │  + Augmentation   │    │  (MobileNetV2)    │    │  + Grad-CAM  │
+└──────────────┘    └──────────────────┘    └───────────────────┘    └──────────────┘
+```
+
+| Stage | Details |
+|---|---|
+| **Data Split** | 70% train / 15% validation / 15% test |
+| **Augmentation** | Rotation, horizontal/vertical flip, zoom, brightness shift |
+| **Architecture** | MobileNetV2 (frozen) → GlobalAvgPool → Dropout → Dense(128) → Dropout → Dense(1, sigmoid) |
+| **Callbacks** | EarlyStopping (patience=5), ReduceLROnPlateau, ModelCheckpoint |
+| **Evaluation** | Confusion matrix, ROC-AUC, classification report, Grad-CAM heatmaps |
+
+### Why Not a Custom CNN?
+
+A custom CNN is also included for comparison. While it achieves ~97% accuracy, MobileNetV2 transfer learning reaches **~99% accuracy** with fewer trainable parameters and better generalization.
+
+---
+
+## 📋 Requirements
+
+| Dependency | Version | Purpose |
+|---|---|---|
+| **Python** | 3.9+ | Runtime |
+| TensorFlow | 2.15.0 | Deep learning framework |
+| NumPy | 1.26.4 | Numerical computing |
+| Pandas | 2.3.3 | Data manipulation |
+| Matplotlib | 3.10.8 | Plotting & visualization |
+| Seaborn | 0.13.2 | Statistical visualization |
+| Scikit-learn | 1.7.2 | Metrics & preprocessing |
+| Streamlit | 1.55.0 | Web app interface |
+| Pillow | 12.1.1 | Image processing |
+| OpenDatasets | 0.1.22 | Kaggle dataset download |
+| Pytest | 9.0.2 | Unit testing |
+
+> All versions are pinned in `requirements.txt` for full reproducibility.
+
+---
+
+## 🖼️ Demo & Screenshots
+
+After training, you'll get outputs like:
+
+- **Training Curves** — Loss and accuracy plots saved in `models/`
+- **Confusion Matrix** — Visual breakdown of correct vs incorrect predictions
+- **ROC Curve** — AUC score showing model discrimination ability
+- **Grad-CAM Heatmaps** — Visual explanation of *where* the model detects cracks
+
+```
+Example Predictions:
+┌─────────────────────────────────────────────────────────┐
+│  Input Image    →    Prediction: Crack (99.7%)          │
+│  [surface.jpg]  →    Grad-CAM: highlights crack region  │
+└─────────────────────────────────────────────────────────┘
+```
+
+> 💡 Run `streamlit run app/app.py` to try it interactively with your own images!
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -202,6 +276,80 @@ All settings are in `src/config.py`:
 | `EPOCHS` | `30` | Max training epochs |
 | `LEARNING_RATE` | `1e-4` | Initial learning rate |
 | `DROPOUT_RATE` | `0.3` | Dropout for regularization |
+
+---
+
+## ❓ Troubleshooting
+
+<details>
+<summary><b>ModuleNotFoundError: No module named 'tensorflow'</b></summary>
+
+Make sure your virtual environment is activated and dependencies installed:
+```bash
+venv\Scripts\activate      # Windows
+pip install -r requirements.txt
+```
+</details>
+
+<details>
+<summary><b>Kaggle API: Could not find kaggle.json</b></summary>
+
+1. Go to [kaggle.com/settings](https://www.kaggle.com/settings) → **API** → **Create New Token**
+2. Place the downloaded `kaggle.json` in:
+   - **Windows:** `C:\Users\<username>\.kaggle\kaggle.json`
+   - **Linux/Mac:** `~/.kaggle/kaggle.json`
+
+Or use **Option B** (manual download) from the Quick Start section.
+</details>
+
+<details>
+<summary><b>CUDA / GPU not detected</b></summary>
+
+1. Ensure compatible NVIDIA drivers are installed
+2. Install GPU-enabled TensorFlow:
+   ```bash
+   pip install tensorflow[and-cuda]==2.15.0
+   ```
+3. Verify: `python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"`
+
+> Training works fine on CPU — it's just slower (~2-3x compared to GPU).
+</details>
+
+<details>
+<summary><b>Out of Memory (OOM) during training</b></summary>
+
+Reduce batch size in `src/config.py`:
+```python
+BATCH_SIZE = 16  # Default is 32
+```
+</details>
+
+<details>
+<summary><b>Streamlit web app shows "Model not found"</b></summary>
+
+Train the model first by running:
+```bash
+python scripts/run_training.py
+```
+The trained model will be saved to `models/best_model.keras`.
+</details>
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how:
+
+1. **Fork** this repository
+2. **Create** a feature branch: `git checkout -b feature/your-feature`
+3. **Commit** your changes: `git commit -m "Add your feature"`
+4. **Push** to the branch: `git push origin feature/your-feature`
+5. **Open** a Pull Request
+
+Please make sure to:
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
 
 ---
 
