@@ -168,7 +168,13 @@ You'll be prompted for your Kaggle credentials (get from [kaggle.com/settings](h
 
 **Option B — Manual download:**
 1. Download from [Kaggle](https://www.kaggle.com/datasets/arunrk7/surface-crack-detection)
-2. Extract to `data/surface-crack-detection/`
+2. Create the folder `data/surface-crack-detection/`
+3. Extract the contents so that the `Positive` and `Negative` folders are directly inside:
+   ```
+   data/surface-crack-detection/
+   ├── Positive/    # (images with cracks)
+   └── Negative/    # (images without cracks)
+   ```
 
 ---
 
