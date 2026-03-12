@@ -245,6 +245,11 @@ Launch the interactive Streamlit web interface:
 streamlit run app/app.py
 ```
 
+> 💡 **Troubleshooting:** If the command above fails with a "Fatal error in launcher" (which happens if you move or rename your project folder and break the virtual environment's hardcoded paths), use this command instead:
+> ```bash
+> python -m streamlit run app/app.py
+> ```
+
 Features:
 - 📤 Drag-and-drop image upload
 - 🔍 Real-time crack detection
