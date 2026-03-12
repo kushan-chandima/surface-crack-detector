@@ -47,11 +47,11 @@ st.markdown("""
         margin: 1rem 0;
     }
     .crack-detected {
-        background-color: #ffebee;
+        background-color: #5e0311;
         border: 2px solid #f44336;
     }
     .no-crack {
-        background-color: #e8f5e9;
+        background-color: #023607;
         border: 2px solid #4caf50;
     }
     .confidence-text {
