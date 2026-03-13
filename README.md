@@ -3,7 +3,7 @@
 A deep learning-based surface crack detection system using **CNN with Transfer Learning (MobileNetV2)**. Upload any surface image and instantly detect whether it contains a crack — with **~99% accuracy**.
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange?logo=tensorflow)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.20-orange?logo=tensorflow)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
@@ -57,7 +57,8 @@ A custom CNN is also included for comparison. While it achieves ~97% accuracy, M
 | Dependency | Version | Purpose |
 |---|---|---|
 | **Python** | 3.9+ | Runtime |
-| TensorFlow | 2.15.0 | Deep learning framework |
+| TensorFlow | 2.20.0 | Deep learning framework |
+| tf_keras | 2.20.1 | Legacy Keras 2 compatibility |
 | NumPy | 1.26.4 | Numerical computing |
 | Pandas | 2.3.3 | Data manipulation |
 | Matplotlib | 3.10.8 | Plotting & visualization |
@@ -154,7 +155,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> 💡 **GPU Support:** If you have an NVIDIA GPU, replace `tensorflow==2.15.0` with `tensorflow[and-cuda]==2.15.0` in `requirements.txt` for faster training.
+> 💡 **GPU Support:** If you have an NVIDIA GPU, replace `tensorflow==2.20.0` with `tensorflow[and-cuda]==2.20.0` in `requirements.txt` for faster training.
 
 ### 4. Download Dataset
 
@@ -319,7 +320,7 @@ Or use **Option B** (manual download) from the Quick Start section.
 1. Ensure compatible NVIDIA drivers are installed
 2. Install GPU-enabled TensorFlow:
    ```bash
-   pip install tensorflow[and-cuda]==2.15.0
+   pip install tensorflow[and-cuda]==2.20.0
    ```
 3. Verify: `python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"`
 

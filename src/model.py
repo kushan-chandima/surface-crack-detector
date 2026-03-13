@@ -5,6 +5,9 @@ Provides two model options:
   2. Custom CNN (simpler — ~97% accuracy, similar to Kaggle notebook)
 """
 
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 from tensorflow.keras import layers, models
 from tensorflow.keras.applications import MobileNetV2
 
