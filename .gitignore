@@ -42,4 +42,6 @@ logs/
 # Personal reference/planning files
 implementation_plan.md
 walkthrough.md
+walkthrough-realtime-implementation.md
+test_st2.py
 scratchpad*.md
