@@ -11,7 +11,6 @@ setup(
     install_requires=[
         "tensorflow>=2.15.0",
         "tf_keras>=2.15.0",
-        "opencv-python-headless>=4.8.0",
         "numpy>=1.26.0",
         "pandas>=2.2.0",
         "matplotlib>=3.8.0",

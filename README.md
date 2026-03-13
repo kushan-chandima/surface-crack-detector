@@ -14,8 +14,7 @@ A deep learning-based surface crack detection system using **CNN with Transfer L
 - 📊 **Full training pipeline** — data augmentation, callbacks, auto-save best model
 - 📈 **Comprehensive evaluation** — confusion matrix, ROC curve, classification report
 - 🌡️ **Grad-CAM visualization** — see exactly where the model detects cracks
-- 🌐 **Streamlit web app** — image upload or real-time webcam video detect
-- 🎥 **Real-time Video Stream** — dynamic crack detection on live video feeds
+- 🌐 **Streamlit web app** — drag-and-drop image upload for live predictions
 - 📦 **GitHub-ready** — clean structure, tests, documentation
 
 ---
@@ -39,13 +38,13 @@ Training a CNN from scratch requires **massive datasets** and **compute power**.
 └──────────────┘    └──────────────────┘    └───────────────────┘    └──────────────┘
 ```
 
-| Stage | Details |
-|---|---|
-| **Data Split** | 70% train / 15% validation / 15% test |
-| **Augmentation** | Rotation, horizontal/vertical flip, zoom, brightness shift |
+| Stage            | Details                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| **Data Split**   | 70% train / 15% validation / 15% test                                                     |
+| **Augmentation** | Rotation, horizontal/vertical flip, zoom, brightness shift                                |
 | **Architecture** | MobileNetV2 (frozen) → GlobalAvgPool → Dropout → Dense(128) → Dropout → Dense(1, sigmoid) |
-| **Callbacks** | EarlyStopping (patience=5), ReduceLROnPlateau, ModelCheckpoint |
-| **Evaluation** | Confusion matrix, ROC-AUC, classification report, Grad-CAM heatmaps |
+| **Callbacks**    | EarlyStopping (patience=5), ReduceLROnPlateau, ModelCheckpoint                            |
+| **Evaluation**   | Confusion matrix, ROC-AUC, classification report, Grad-CAM heatmaps                       |
 
 ### Why Not a Custom CNN?
 
@@ -55,21 +54,20 @@ A custom CNN is also included for comparison. While it achieves ~97% accuracy, M
 
 ## 📋 Requirements
 
-| Dependency | Version | Purpose |
-|---|---|---|
-| **Python** | 3.9+ | Runtime |
-| TensorFlow | 2.20.0 | Deep learning framework |
-| tf_keras | 2.20.1 | Legacy Keras 2 compatibility |
-| NumPy | 1.26.4 | Numerical computing |
-| Pandas | 2.3.3 | Data manipulation |
-| Matplotlib | 3.10.8 | Plotting & visualization |
-| Seaborn | 0.13.2 | Statistical visualization |
-| Scikit-learn | 1.7.2 | Metrics & preprocessing |
-| Streamlit | 1.55.0 | Web app interface |
-| OpenCV | 4.9.0 | Real-time video processing |
-| Pillow | 12.1.1 | Image processing |
-| OpenDatasets | 0.1.22 | Kaggle dataset download |
-| Pytest | 9.0.2 | Unit testing |
+| Dependency   | Version | Purpose                      |
+| ------------ | ------- | ---------------------------- |
+| **Python**   | 3.9+    | Runtime                      |
+| TensorFlow   | 2.20.0  | Deep learning framework      |
+| tf_keras     | 2.20.1  | Legacy Keras 2 compatibility |
+| NumPy        | 1.26.4  | Numerical computing          |
+| Pandas       | 2.3.3   | Data manipulation            |
+| Matplotlib   | 3.10.8  | Plotting & visualization     |
+| Seaborn      | 0.13.2  | Statistical visualization    |
+| Scikit-learn | 1.7.2   | Metrics & preprocessing      |
+| Streamlit    | 1.55.0  | Web app interface            |
+| Pillow       | 12.1.1  | Image processing             |
+| OpenDatasets | 0.1.22  | Kaggle dataset download      |
+| Pytest       | 9.0.2   | Unit testing                 |
 
 > All versions are pinned in `requirements.txt` for full reproducibility.
 
@@ -82,7 +80,7 @@ After training, you'll get outputs like:
 - **Training Curves** — Loss and accuracy plots saved in `models/`
 - **Confusion Matrix** — Visual breakdown of correct vs incorrect predictions
 - **ROC Curve** — AUC score showing model discrimination ability
-- **Grad-CAM Heatmaps** — Visual explanation of *where* the model detects cracks
+- **Grad-CAM Heatmaps** — Visual explanation of _where_ the model detects cracks
 
 ```
 Example Predictions:
@@ -164,12 +162,15 @@ pip install -r requirements.txt
 The project uses the [Surface Crack Detection](https://www.kaggle.com/datasets/arunrk7/surface-crack-detection) dataset from Kaggle (40,000 images).
 
 **Option A — Automatic download:**
+
 ```bash
 python scripts/download_data.py
 ```
+
 You'll be prompted for your Kaggle credentials (get from [kaggle.com/settings](https://www.kaggle.com/settings) → API → Create New Token).
 
 **Option B — Manual download:**
+
 1. Download from [Kaggle](https://www.kaggle.com/datasets/arunrk7/surface-crack-detection)
 2. Create the folder `data/surface-crack-detection/`
 3. Extract the contents so that the `Positive` and `Negative` folders are directly inside:
@@ -203,6 +204,7 @@ python scripts/run_training.py --skip-download
 ```
 
 Training will:
+
 1. Download & organize the dataset (if needed)
 2. Train the model with data augmentation
 3. Save the best model to `models/best_model.keras`
@@ -249,14 +251,15 @@ streamlit run app/app.py
 ```
 
 > 💡 **Troubleshooting:** If the command above fails with a "Fatal error in launcher" (which happens if you move or rename your project folder and break the virtual environment's hardcoded paths), use this command instead:
+>
 > ```bash
 > python -m streamlit run app/app.py
 > ```
 
 Features:
+
 - 📤 Drag-and-drop image upload
-- 📸 Static camera snap & predict
-- 🎥 **Real-time Live Video Stream** (OpenCV based)
+- 🔍 Real-time crack detection
 - 🌡️ Grad-CAM heatmap visualization
 - ⚙️ Adjustable confidence threshold
 
@@ -264,10 +267,10 @@ Features:
 
 ## 📊 Model Performance
 
-| Model | Accuracy | AUC | Parameters |
-|---|---|---|---|
+| Model                         | Accuracy | AUC       | Parameters               |
+| ----------------------------- | -------- | --------- | ------------------------ |
 | **MobileNetV2** (recommended) | **~99%** | **~0.99** | ~2.3M (trainable: ~200K) |
-| Custom CNN | ~97% | ~0.97 | ~300K |
+| Custom CNN                    | ~97%     | ~0.97     | ~300K                    |
 
 ---
 
@@ -283,14 +286,14 @@ python -m pytest tests/test_model.py -v
 
 All settings are in `src/config.py`:
 
-| Setting | Default | Description |
-|---|---|---|
-| `MODEL_TYPE` | `"mobilenetv2"` | Model architecture |
-| `IMG_SIZE` | `(224, 224)` | Input image size |
-| `BATCH_SIZE` | `32` | Training batch size |
-| `EPOCHS` | `30` | Max training epochs |
-| `LEARNING_RATE` | `1e-4` | Initial learning rate |
-| `DROPOUT_RATE` | `0.3` | Dropout for regularization |
+| Setting         | Default         | Description                |
+| --------------- | --------------- | -------------------------- |
+| `MODEL_TYPE`    | `"mobilenetv2"` | Model architecture         |
+| `IMG_SIZE`      | `(224, 224)`    | Input image size           |
+| `BATCH_SIZE`    | `32`            | Training batch size        |
+| `EPOCHS`        | `30`            | Max training epochs        |
+| `LEARNING_RATE` | `1e-4`          | Initial learning rate      |
+| `DROPOUT_RATE`  | `0.3`           | Dropout for regularization |
 
 ---
 
@@ -300,10 +303,12 @@ All settings are in `src/config.py`:
 <summary><b>ModuleNotFoundError: No module named 'tensorflow'</b></summary>
 
 Make sure your virtual environment is activated and dependencies installed:
+
 ```bash
 venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 ```
+
 </details>
 
 <details>
@@ -315,6 +320,7 @@ pip install -r requirements.txt
    - **Linux/Mac:** `~/.kaggle/kaggle.json`
 
 Or use **Option B** (manual download) from the Quick Start section.
+
 </details>
 
 <details>
@@ -328,25 +334,31 @@ Or use **Option B** (manual download) from the Quick Start section.
 3. Verify: `python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"`
 
 > Training works fine on CPU — it's just slower (~2-3x compared to GPU).
+
 </details>
 
 <details>
 <summary><b>Out of Memory (OOM) during training</b></summary>
 
 Reduce batch size in `src/config.py`:
+
 ```python
 BATCH_SIZE = 16  # Default is 32
 ```
+
 </details>
 
 <details>
 <summary><b>Streamlit web app shows "Model not found"</b></summary>
 
 Train the model first by running:
+
 ```bash
 python scripts/run_training.py
 ```
+
 The trained model will be saved to `models/best_model.keras`.
+
 </details>
 
 ---
@@ -362,6 +374,7 @@ Contributions are welcome! Here's how:
 5. **Open** a Pull Request
 
 Please make sure to:
+
 - Follow the existing code style
 - Add tests for new features
 - Update documentation as needed
