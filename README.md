@@ -14,7 +14,8 @@ A deep learning-based surface crack detection system using **CNN with Transfer L
 - 📊 **Full training pipeline** — data augmentation, callbacks, auto-save best model
 - 📈 **Comprehensive evaluation** — confusion matrix, ROC curve, classification report
 - 🌡️ **Grad-CAM visualization** — see exactly where the model detects cracks
-- 🌐 **Streamlit web app** — drag-and-drop image upload for live predictions
+- 🌐 **Streamlit web app** — image upload or real-time webcam video detect
+- 🎥 **Real-time Video Stream** — dynamic crack detection on live video feeds
 - 📦 **GitHub-ready** — clean structure, tests, documentation
 
 ---
@@ -65,6 +66,7 @@ A custom CNN is also included for comparison. While it achieves ~97% accuracy, M
 | Seaborn | 0.13.2 | Statistical visualization |
 | Scikit-learn | 1.7.2 | Metrics & preprocessing |
 | Streamlit | 1.55.0 | Web app interface |
+| OpenCV | 4.9.0 | Real-time video processing |
 | Pillow | 12.1.1 | Image processing |
 | OpenDatasets | 0.1.22 | Kaggle dataset download |
 | Pytest | 9.0.2 | Unit testing |
@@ -253,7 +255,8 @@ streamlit run app/app.py
 
 Features:
 - 📤 Drag-and-drop image upload
-- 🔍 Real-time crack detection
+- 📸 Static camera snap & predict
+- 🎥 **Real-time Live Video Stream** (OpenCV based)
 - 🌡️ Grad-CAM heatmap visualization
 - ⚙️ Adjustable confidence threshold
 

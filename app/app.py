@@ -144,11 +144,12 @@ def load_model(path):
 # ============================================================================
 input_method = st.radio(
     "Select Input Method:",
-    ("📁 Upload Image", "📸 Take a Picture"),
+    ("📁 Upload Image", "📸 Take a Picture", "🎥 Live Video Stream"),
     horizontal=True,
 )
 
 image_file = None
+run_stream = False
 
 if input_method == "📁 Upload Image":
     image_file = st.file_uploader(
@@ -156,11 +157,14 @@ if input_method == "📁 Upload Image":
         type=["jpg", "jpeg", "png", "bmp"],
         help="Upload an image of a concrete/surface to check for cracks",
     )
-else:
+elif input_method == "📸 Take a Picture":
     image_file = st.camera_input("Take a picture of a surface")
+elif input_method == "🎥 Live Video Stream":
+    st.info("👆 Grant camera access to your browser. Check the box below to start the live video feed.")
+    run_stream = st.checkbox("🟢 Start/Stop Live Video Stream")
 
-# Demo mode with sample info
-if image_file is None:
+# Demo mode with sample info for image modes
+if input_method in ["📁 Upload Image", "📸 Take a Picture"] and image_file is None:
     if input_method == "📁 Upload Image":
         st.info(
             "👆 Upload an image to get started!\n\n"
@@ -172,13 +176,61 @@ if image_file is None:
             "👆 Grant camera access and snap a photo of a surface to check for cracks!"
         )
 
-if image_file is not None:
+if input_method == "🎥 Live Video Stream":
+    if run_stream:
+        model = load_model(model_path)
+        if model is None:
+            st.error(
+                f"❌ Model not found at: `{model_path}`\n\n"
+                "Please train the model first:\n"
+                "```bash\n"
+                "python scripts/run_training.py\n"
+                "```"
+            )
+        else:
+            FRAME_WINDOW = st.empty()
+            metrics_placeholder = st.empty()
+            
+            with st.spinner("Starting webcam..."):
+                import cv2
+                camera = cv2.VideoCapture(0)
+                
+            if not camera.isOpened():
+                st.error("❌ Failed to open webcam. Ensure no other application is using it.")
+            else:
+                from src.predict import process_video_frame
+                
+                try:
+                    while run_stream:
+                        ret, frame = camera.read()
+                        if not ret:
+                            st.error("Failed to capture video from camera.")
+                            break
+                        
+                        # Process frame
+                        result, annotated_frame = process_video_frame(frame, model=model, show_gradcam=show_gradcam)
+                        
+                        # Streamlit expects RGB
+                        rgb_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
+                        
+                        # Render image. Omitting use_container_width based on deprecation warnings.
+                        FRAME_WINDOW.image(rgb_frame, channels="RGB")
+                        
+                        with metrics_placeholder.container():
+                            col1, col2 = st.columns(2)
+                            col1.metric("Classification", result["label"])
+                            col2.metric("Confidence", f"{result['confidence']:.1%}")
+                            
+                finally:
+                    camera.release()
+
+elif image_file is not None:
     # Display image
     image = Image.open(image_file)
 
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.image(image, caption="Input Image", use_container_width=True)
+        st.image(image, caption="Input Image")
 
     # Load model
     model = load_model(model_path)
@@ -240,7 +292,7 @@ if image_file is not None:
                     save_path=gradcam_path,
                 )
                 if os.path.exists(gradcam_path):
-                    st.image(gradcam_path, use_container_width=True)
+                    st.image(gradcam_path)
 
         finally:
             # Clean up temp file

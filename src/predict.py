@@ -6,6 +6,7 @@ Handles single-image and batch prediction with optional Grad-CAM visualization.
 import os
 import argparse
 
+import cv2
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -231,6 +232,60 @@ def predict_batch(image_paths, model=None, model_path=None):
             })
 
     return results
+
+
+def process_video_frame(frame, model, show_gradcam=True):
+    """
+    Process a single BGR OpenCV frame for real-time video detection.
+    Preprocesses, predicts, and draws bounding boxes/Grad-CAM overlays.
+    
+    Args:
+        frame: OpenCV BGR image array.
+        model: Loaded Keras model.
+        show_gradcam: Whether to overlay Grad-CAM heatmap.
+        
+    Returns:
+        dict: Prediction results.
+        numpy array: Annotated BGR frame.
+    """
+    # Preprocess
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    resized = cv2.resize(rgb_frame, config.IMG_SIZE)
+    img_array = resized.astype(np.float32) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    # Predict
+    probability = float(model.predict(img_array, verbose=0)[0][0])
+    has_crack = probability >= config.CONFIDENCE_THRESHOLD
+    confidence = probability if has_crack else 1 - probability
+
+    result = {
+        "label": "Positive" if has_crack else "Negative",
+        "confidence": confidence,
+        "has_crack": has_crack,
+        "probability": probability,
+    }
+
+    # Annotate frame
+    display_frame = frame.copy()
+
+    if show_gradcam and has_crack:
+        heatmap = _generate_gradcam_heatmap(model, img_array)
+        heatmap_resized = cv2.resize(heatmap, (frame.shape[1], frame.shape[0]))
+        heatmap_img = np.uint8(255 * heatmap_resized)
+        heatmap_colored = cv2.applyColorMap(heatmap_img, cv2.COLORMAP_JET)
+        display_frame = cv2.addWeighted(display_frame, 1.0 - config.GRAD_CAM_ALPHA, heatmap_colored, config.GRAD_CAM_ALPHA, 0)
+
+    # Draw Text
+    color = (0, 0, 255) if has_crack else (0, 255, 0)  # BGR
+    status_text = f"CRACK DETECTED ({confidence:.1%})" if has_crack else f"NO CRACK ({confidence:.1%})"
+    
+    # Add a background rectangle for text readability
+    (text_w, text_h), _ = cv2.getTextSize(status_text, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2)
+    cv2.rectangle(display_frame, (10, 10), (10 + text_w + 10, 10 + text_h + 15), (0, 0, 0), -1)
+    cv2.putText(display_frame, status_text, (15, 10 + text_h + 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2, cv2.LINE_AA)
+
+    return result, display_frame
 
 
 def main():
