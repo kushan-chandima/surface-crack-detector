@@ -21,7 +21,7 @@ VAL_DIR = os.path.join(DATA_DIR, "val")
 TEST_DIR = os.path.join(DATA_DIR, "test")
 
 # Model save paths
-BEST_MODEL_PATH = os.path.join(MODEL_DIR, "best_model.keras")
+BEST_MODEL_PATH = os.path.join(MODEL_DIR, "best_model_resaved.keras")
 FINAL_MODEL_PATH = os.path.join(MODEL_DIR, "final_model.keras")
 
 # ==============================================================================

@@ -3,6 +3,9 @@ venv/
 env/
 .venv/
 
+# New environment folder
+venv-surface/
+
 # Data & Models (too large for git)
 data/
 models/*.keras
